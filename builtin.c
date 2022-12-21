@@ -1,77 +1,25 @@
 #include "shell.h"
 
 /**
- * exit_sh - function to exit from shell
- * @command: input from command
- * Return: 0 for success
- */
-int exit_sh(char **command)
+* handle_builtin - handles execution of builtin functions
+* @command: tokenized commands
+* @line: input read from stdin
+*
+* Return: 1 if executed, 0 if not
+*/
+int handle_builtin(char **command, char *line)
 {
-	if (*command)
+	struct builtin builtin = {"env", "exit"};
+
+	if (_strcmp(*command, builtin.env) == 0)
 	{
-		buffers1(NULL, NULL);
-		buffers2(NULL, NULL);
-		buffers3(NULL, NULL);
-		buffers4(NULL, NULL);
-		buffers5(NULL);
-		exit(2);
+		print_env();
+		return (1);
+	}
+	else if (_strcmp(*command, builtin.exit) == 0)
+	{
+		exit_cmd(command, line);
+		return (1);
 	}
 	return (0);
-}
-
-/**
- * cd - function to change directory
- * @command: input from command
- * Return: 0 for success
- */
-int cd(char **command)
-{
-	chdir(command[1]);
-	return (0);
-}
-
-/**
- * printenv - function to print env
- * @command: pointer to command
- * Return: 0 for success
- */
-int printenv(char **command)
-{
-	int i;
-
-	if (*command)
-	{
-		i = 0;
-		while (environ[i])
-		{
-			write(1, environ[i], _strlen(environ[i]));
-			write(1, "\n", 1);
-			i++;
-		}
-	}
-	return (0);
-}
-
-/**
- * checkBuiltins - check for builtins and call function
- * @combine: full directory
- * @command: command line input
- * Return: path to builtin or process from directory
- */
-int checkBuiltins(char *combine, char **command)
-{
-	int i;
-	char *array[] = {"exit", "cd", "env", NULL};
-
-	typedef int (*Builtins)(char **);
-	Builtins functions[] = {&exit_sh, &cd, &printenv};
-
-	i = 0;
-	while (array[i] != NULL)
-	{
-		if (_strcmp(array[i], command[0]) == 0)
-			return (functions[i](command));
-		i++;
-	}
-	return (execute(combine, command));
 }

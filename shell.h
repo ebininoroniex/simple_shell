@@ -1,39 +1,61 @@
-#ifndef _SHELL_H_
-#define _SHELL_H_
+#ifndef _SHELL_H
+#define _SHELL_H
 
-#include <string.h>
+#include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
-#include <stdlib.h>
-#include <signal.h>
-extern char **environ;
-extern int dircount;
-#define DELIM " \n\t"
+#include <time.h>
+#include <stdbool.h>
 
-void env(char **env);
-int _strlen(char *s);
+/* environment variables */
+extern char **environ;
+extern __sighandler_t signal(int __sig, __sighandler_t __handler);
+
+/* handle built ins */
+int checker(char **cmd, char *buf);
+void prompt_user(void);
+void handle_signal(int m);
+char **tokenizer(char *line);
+char *test_path(char **path, char *command);
+char *append_path(char *path, char *command);
+int handle_builtin(char **command, char *line);
+void exit_cmd(char **command, char *line);
+
+void print_env(void);
+
+/* string handlers */
 int _strcmp(char *s1, char *s2);
-char *_strdup(char *str);
-void prompt(void);
-char *get_line(void);
-char **split_line(char *line);
-char *get_env(char **env);
-char *pathCat(char *dir, char *av);
-char **dirTok(char **env);
-void loop(char **env);
-char *checkPath(char **dir, char *command);
-int execute(char *fullPath, char **command);
-int exit_sh(char **command);
-int cd(char **command);
-int printenv(char **command);
-int checkBuiltins(char *combine, char **command);
-void handler(int sig);
-void buffers1(char *line, char **command);
-void buffers2(char **dir, char *combine);
-void buffers3(char **tokens, char *buf);
-void buffers4(char **tok, char *buf2);
-void buffers5(char *dup);
+int _strlen(char *s);
+int _strncmp(char *s1, char *s2, int n);
+char *_strdup(char *s);
+char *_strchr(char *s, char c);
+
+void execution(char *cp, char **cmd);
+char *find_path(void);
+
+/* helper function for efficient free */
+void free_buffers(char **buf);
+
+struct builtin
+{
+	char *env;
+	char *exit;
+} builtin;
+
+struct info
+{
+	int final_exit;
+	int ln_count;
+} info;
+
+struct flags
+{
+	bool interactive;
+} flags;
+
 #endif

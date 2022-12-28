@@ -1,21 +1,18 @@
 #include "shell.h"
 
 /**
-* free_buffers - frees buffers
-* @buf: buffer to be freed
-*
-* Return: no return
-*/
-void free_buffers(char **buf)
+ * bfree - frees a pointer and NULLs the address
+ * @ptr: address of the pointer to free
+ *
+ * Return: 1 if freed, otherwise 0.
+ */
+int bfree(void **ptr)
 {
-	int i = 0;
-
-	if (!buf || buf == NULL)
-		return;
-	while (buf[i])
+	if (ptr && *ptr)
 	{
-		free(buf[i]);
-		i++;
+		free(*ptr);
+		*ptr = NULL;
+		return (1);
 	}
-	free(buf);
+	return (0);
 }
